@@ -2,7 +2,6 @@ package com.ghostcat.poi.writer;
 
 import com.ghostcat.common.util.GhostBeanUtils;
 import com.ghostcat.poi.annotations.ExportCol;
-import com.ghostcat.poi.reader.GhostExcelReader;
 import com.ghostcat.poi.util.ExportColParser;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -11,20 +10,28 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Excel模板导出工具
+ * @author AssGhost
+ */
 public class GhostExcelWriter {
 
     private static int BUF_SIZE = 1024;
 
     private static int DEFAUlT_HEADER_ROW_NUM = 0;
 
+    /**
+     * 读项目里的Excel模板
+     * @param fileName
+     * @return
+     * @throws IOException
+     */
     public static Workbook readTmplateExcel(String fileName) throws IOException {
 
         ClassPathResource classPathResource = new ClassPathResource(fileName);
@@ -39,6 +46,12 @@ public class GhostExcelWriter {
         }
     }
 
+    /**
+     * 输入流转byte
+     * @param inputStream
+     * @return
+     * @throws IOException
+     */
     public static byte[] readFileToByte(InputStream inputStream) throws IOException {
         try(ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
 
@@ -68,8 +81,9 @@ public class GhostExcelWriter {
      * @param clazz
      * @return
      */
-    public static List<String> getHeaderKeyList(Sheet sheet, int headerRowNum, Class clazz) {
+    public static Map<String, Integer> getHeaderKeyList(Sheet sheet, int headerRowNum, Class clazz) {
 
+        //表头名与字段名的对应关系
         Map<String, String> colFieldMap = ExportColParser.parseAntExportCol(clazz);
 
         int lastRowNum = sheet.getLastRowNum();
@@ -78,28 +92,30 @@ public class GhostExcelWriter {
             headerRowNum = lastRowNum;
         }
 
+        //表头行
         Row headerRow = sheet.getRow(headerRowNum);
 
         short lastCellNum = headerRow.getLastCellNum();
 
-        List<String> headerKeyList = new ArrayList<>(lastCellNum);
+        Map<String, Integer> headerIndexMap = new LinkedHashMap<>(lastCellNum);
 
         for (int c = 0; c < lastCellNum; c++) {
             Cell headerCell = headerRow.getCell(c);
 
             if (null != headerCell) {
+                //表头名称
                 String headerName = headerCell.getStringCellValue();
 
                 if (!StringUtils.isEmpty(headerName)) {
                     String headerKey = colFieldMap.get(headerName);
-                    headerKeyList.add(headerKey);
+                    if (!StringUtils.isEmpty(headerKey)) {
+                        headerIndexMap.put(headerKey, c);
+                    }
                 }
-            } else {
-                headerKeyList.add(null);
             }
         }
 
-        return headerKeyList;
+        return headerIndexMap;
     }
 
     public static <T> void appendValues(Sheet sheet, List<T> dataList, Class<T> clazz)
@@ -109,7 +125,7 @@ public class GhostExcelWriter {
     }
 
     /**
-     * 按表头映射添加内容
+     * 按目标Class字段上的{@link ExportCol}设置对应列的值
      * @param sheet
      * @param headerRowNum
      * @param dataList
@@ -121,7 +137,8 @@ public class GhostExcelWriter {
 
         if (!CollectionUtils.isEmpty(dataList)) {
 
-            List<String> headerKeyList = getHeaderKeyList(sheet, headerRowNum, clazz);
+            //解析表头，获得Class的字段在模板中的位置
+            Map<String, Integer> headerIndexMap = getHeaderKeyList(sheet, headerRowNum, clazz);
 
             int newRowNum = sheet.getLastRowNum() + 1;
 
@@ -132,12 +149,13 @@ public class GhostExcelWriter {
                 Row newRow = sheet.createRow(newRowNum);
 
                 for (String fieldName : itemMap.keySet()) {
-                    Object fieldValue = itemMap.get(fieldName);
-
-                    int j = headerKeyList.indexOf(fieldValue);
-                    if (j >= 0) {
+                    //获取字段对应的下标，模板中的列号
+                    Integer j = headerIndexMap.get(fieldName);
+                    if (null != j && j >= 0) {
                         Cell newCell = newRow.createCell(j);
 
+                        Object fieldValue = itemMap.get(fieldName);
+                        //根据不同的字段类型设置不同的样式
                         if (fieldValue instanceof BigDecimal) {
                             CellStyle moneyStyle = ExcelWriter.createMoneyStyle(newCell);
                             newCell.setCellStyle(moneyStyle);

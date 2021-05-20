@@ -2,11 +2,6 @@ package com.ghostcat.common.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.ghostcat.common.bean.SimpleBean;
 import com.ghostcat.common.jackson.JacksonConfig;
 import org.springframework.beans.BeanUtils;
@@ -14,8 +9,6 @@ import org.springframework.beans.BeanUtils;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -49,7 +42,7 @@ public class GhostBeanUtils {
     public static <T> Map<String, Object> bean2Map(T bean, Class<T> clazz) throws InvocationTargetException, IllegalAccessException {
 
         if (null != clazz) {
-
+            //利用spring的PropertyDescriptor快速获得字段名和get/set方法
             PropertyDescriptor[] propertyDescriptors = BeanUtils.getPropertyDescriptors(clazz);
 
             Map<String, Object> map = new LinkedHashMap<>(propertyDescriptors.length);
@@ -60,6 +53,7 @@ public class GhostBeanUtils {
                     continue;
                 }
 
+                //get方法
                 Method readMethod = propertyDescriptor.getReadMethod();
                 if (null != readMethod) {
                     Object readValue = readMethod.invoke(bean);
@@ -75,7 +69,7 @@ public class GhostBeanUtils {
     }
 
     public static <T> T map2Bean(Map<String, ?> map, Class<T> clazz) throws JsonProcessingException {
-
+        //map转json再转回bean
         if (null != map && null != clazz) {
             String json = OBJECT_MAPPER.writeValueAsString(map);
             return OBJECT_MAPPER.readValue(json, clazz);

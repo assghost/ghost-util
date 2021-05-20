@@ -17,11 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Excel读取相关
+ * Excel读取工具
  * @author AssGhost
  */
 public class ExcelReader {
 
+    /**
+     * 读取Excel的sheet，以二维数组的形式返回结果
+     * @param sheet0
+     * @return
+     */
     public static List<List<String>> readSheet(Sheet sheet0) {
 
         List<List<String>> rowList = new ArrayList<>();
@@ -30,7 +35,7 @@ public class ExcelReader {
 
             int lastRowNum = sheet0.getLastRowNum();
 
-            for (int r = 0; r < lastRowNum; r++) {
+            for (int r = 0; r <= lastRowNum; r++) {
                 Row row = sheet0.getRow(r);
 
                 List<String> colList = new ArrayList<>();
@@ -61,7 +66,7 @@ public class ExcelReader {
                     }
 
                     if (CellType.NUMERIC.equals(cellType)) {
-
+                        //数字格式，需要判断是普通数字还是日期
                         double cellValue = cell.getNumericCellValue();
 
                         if (DateUtil.isCellDateFormatted(cell)) {
@@ -80,6 +85,7 @@ public class ExcelReader {
                     }
 
                     if (CellType.FORMULA.equals(cellType)) {
+                        //公式
                         String cellValue = cell.getCellFormula();
                         colList.add(cellValue);
                     }
@@ -105,6 +111,13 @@ public class ExcelReader {
         return readExcel(workbook);
     }
 
+    /**
+     * 读合并单元格的值
+     * 如果选择的单元格在合并单元格的范围内，则返回合并单元格的值
+     * @param sheet
+     * @param cell
+     * @return
+     */
     public static Cell getMergeCell(Sheet sheet, Cell cell) {
         if (null != sheet && null != cell) {
             int rowIndex = cell.getRowIndex();
@@ -120,6 +133,7 @@ public class ExcelReader {
 
                 if (rowIndex >= firstRow && rowIndex <= lastRow) {
                     if (columnIndex >= firstColumn && columnIndex <= lastColumn) {
+                        //合并单元格的值在第一行第一列
                         Row mergeRow = sheet.getRow(firstRow);
                         Cell mergeCell = mergeRow.getCell(firstColumn);
                         return mergeCell;
@@ -139,12 +153,26 @@ public class ExcelReader {
         return "xlsx".equals(fileType);
     }
 
+    /**
+     * 打开Excel附件
+     * @param multipartFile
+     * @return
+     * @throws IOException
+     */
+    public static Workbook openXlsx(MultipartFile multipartFile) throws IOException {
+        try(InputStream is = multipartFile.getInputStream()) {
+            return new XSSFWorkbook(is);
+        }
+    }
+
     public static void main(String[] args) {
 
         try {
             File file = new File(ExcelReader.class.getClassLoader().getResource("excel-tmp/simple-tmp.xlsx").getPath());
+
             List<List<String>> lists = readXlsx(file);
             System.out.println(lists);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

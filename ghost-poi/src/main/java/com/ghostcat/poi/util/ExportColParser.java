@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class ExportColParser {
     /**
-     * 读取实体类字段与模板表头的关系
+     * 解析实体类字段与模板表头的关系
      * @param clazz
      * @return
      */

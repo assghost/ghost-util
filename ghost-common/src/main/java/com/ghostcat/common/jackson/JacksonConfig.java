@@ -27,11 +27,13 @@ public class JacksonConfig {
     public static ObjectMapper configObjectMapper(ObjectMapper objectMapper) {
 
         SimpleModule simpleModule = new SimpleModule();
+        //设置BigDecimal至少保留两位小数
         simpleModule.addSerializer(BigDecimal.class, new BigDecimalSerializer());
         simpleModule.addDeserializer(BigDecimal.class, new NumberDeserializers.BigDecimalDeserializer());
 
         objectMapper.registerModule(simpleModule);
 
+        //设置LocalDate和LocalDateTime的默认序列化和反序列化格式
         JavaTimeModule javaTimeModule = new JavaTimeModule();
         javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(GhostDateTimeUtils.getDefaultDateTimeFormatter()));
         javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(GhostDateTimeUtils.getDefaultDateTimeFormatter()));

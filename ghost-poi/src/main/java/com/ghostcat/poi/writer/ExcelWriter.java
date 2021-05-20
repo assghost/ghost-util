@@ -11,6 +11,11 @@ import java.util.Date;
 
 public class ExcelWriter {
 
+    /**
+     * 设置单元格的值
+     * @param cell
+     * @param value
+     */
     public static void setCellValue(Cell cell, Object value) {
         if (cell != null && value != null) {
 
@@ -45,12 +50,14 @@ public class ExcelWriter {
             }
             else if (value instanceof String) {
                 String str = (String) value;
+                //等号开头的字符串设为公式
                 if (str.startsWith("=")) {
                     cell.setCellFormula(str);
                 } else {
                     cell.setCellValue(str);
                 }
             } else {
+                //其他类型的值搞成富文本
                 Sheet sheet = cell.getSheet();
                 Workbook workbook = sheet.getWorkbook();
                 CreationHelper creationHelper = workbook.getCreationHelper();
@@ -62,6 +69,12 @@ public class ExcelWriter {
         }
     }
 
+    /**
+     * 设置单元格备注
+     * @param cell
+     * @param text
+     * @param author
+     */
     public static void addComment(Cell cell, String text, String author) {
         Sheet sheet = cell.getSheet();
         Workbook workbook = sheet.getWorkbook();
@@ -84,6 +97,11 @@ public class ExcelWriter {
         cell.setCellComment(cellComment);
     }
 
+    /**
+     * 表头样式
+     * @param workbook
+     * @return
+     */
     public static CellStyle createTitleStyle(Workbook workbook) {
         CellStyle cellStyle = workbook.createCellStyle();
 
@@ -93,6 +111,11 @@ public class ExcelWriter {
         return cellStyle;
     }
 
+    /**
+     * 文本内容样式
+     * @param workbook
+     * @return
+     */
     public static CellStyle createContentStyle(Workbook workbook) {
         CellStyle cellStyle = workbook.createCellStyle();
 
@@ -109,6 +132,11 @@ public class ExcelWriter {
         return createContentStyle(workbook);
     }
 
+    /**
+     * 金额会计样式
+     * @param workbook
+     * @return
+     */
     public static CellStyle createMoneyStyle(Workbook workbook) {
         CellStyle cellStyle = workbook.createCellStyle();
 
@@ -129,6 +157,11 @@ public class ExcelWriter {
         return createMoneyStyle(workbook);
     }
 
+    /**
+     * 数字样式
+     * @param workbook
+     * @return
+     */
     public static CellStyle createNumericStyle(Workbook workbook) {
         CellStyle cellStyle = workbook.createCellStyle();
 
