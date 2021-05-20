@@ -6,12 +6,17 @@ import com.ghostcat.poi.util.ExportColParser;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +77,18 @@ public class GhostExcelWriter {
         try(FileInputStream fis = new FileInputStream(file)) {
             return readFileToByte(fis);
         }
+    }
+
+    public static ResponseEntity<byte[]> buildDownloadResponse(byte[] bytes, String fileName) {
+
+        String newFileName = new String(fileName.getBytes(), StandardCharsets.ISO_8859_1);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        httpHeaders.setContentLength(bytes != null ? bytes.length : 50);
+        httpHeaders.setContentDispositionFormData("attachment", newFileName);
+
+        return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
     }
 
     /**
