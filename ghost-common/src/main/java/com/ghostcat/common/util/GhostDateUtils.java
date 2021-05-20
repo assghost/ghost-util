@@ -4,12 +4,11 @@ import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author AssGhost
@@ -94,5 +93,27 @@ public class GhostDateUtils {
         LocalDate localDate = instant.atZone(zoneId).toLocalDate();
 
         return localDate;
+    }
+
+    /**
+     * 获取两天之间的所有日期
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public static List<LocalDate> getPeriodDate (LocalDate startDate, LocalDate endDate) {
+        //间隔天数
+        int daysInt = Period.between(startDate, endDate).getDays();
+        List<LocalDate> dateList = new ArrayList<>();
+
+        LocalDate currentDate = startDate;
+
+        while (!currentDate.isAfter(endDate)) {
+            dateList.add(currentDate);
+
+            currentDate = currentDate.plusDays(1);
+        }
+
+        return dateList;
     }
 }
