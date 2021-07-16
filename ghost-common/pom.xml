@@ -8,10 +8,15 @@
     <artifactId>ghost-common</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
     <parent>
-        <groupId>com.ghostcat.util</groupId>
-        <artifactId>ghost-util</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.5.2</version>
     </parent>
 
     <dependencies>

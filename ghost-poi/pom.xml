@@ -7,12 +7,11 @@
     <groupId>com.ghostcat.util</groupId>
     <artifactId>ghost-poi</artifactId>
     <version>1.0-SNAPSHOT</version>
-    
-    <parent>
-        <groupId>com.ghostcat.util</groupId>
-        <artifactId>ghost-util</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -24,6 +23,8 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
+            <version>4.1.2</version>
         </dependency>
+
     </dependencies>
 </project>

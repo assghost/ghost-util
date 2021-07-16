@@ -1,6 +1,6 @@
 package com.ghostcat.common.util;
 
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,7 +51,7 @@ public class GhostDateUtils {
     }
 
     public static LocalDate str2Date(String dateStr, DateTimeFormatter dateTImeFormatter) {
-        if (!StringUtils.isEmpty(dateStr)) {
+        if (!ObjectUtils.isEmpty(dateStr)) {
             return LocalDate.parse(dateStr, dateTImeFormatter);
         }
 
@@ -60,7 +60,7 @@ public class GhostDateUtils {
 
     public static Date parseDate(String dateStr, String pattern) throws ParseException {
 
-        if (!StringUtils.isEmpty(dateStr)) {
+        if (!ObjectUtils.isEmpty(dateStr)) {
             return new SimpleDateFormat(pattern).parse(dateStr);
         }
 

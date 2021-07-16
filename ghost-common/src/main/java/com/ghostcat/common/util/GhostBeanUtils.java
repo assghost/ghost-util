@@ -78,20 +78,20 @@ public class GhostBeanUtils {
         return null;
     }
 
-    public static void main(String[] args) {
-        Map<String, Object> map = new HashMap<>(10);
-
-        map.put("name", "Ethan");
-        map.put("age", "10");
-        map.put("birth", "2021-05-20");
-        map.put("money", "100.1");
-
-        try {
-            SimpleBean simpleBean = map2Bean(map, SimpleBean.class);
-            System.out.println(getObjectMapper().writeValueAsString(simpleBean));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void main(String[] args) {
+//        Map<String, Object> map = new HashMap<>(10);
+//
+//        map.put("name", "Ethan");
+//        map.put("age", "10");
+//        map.put("birth", "2021-05-20");
+//        map.put("money", "100.1");
+//
+//        try {
+//            SimpleBean simpleBean = map2Bean(map, SimpleBean.class);
+//            System.out.println(getObjectMapper().writeValueAsString(simpleBean));
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 }

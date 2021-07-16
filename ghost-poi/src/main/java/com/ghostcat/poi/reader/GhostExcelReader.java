@@ -8,7 +8,7 @@ import com.ghostcat.poi.util.ExportColParser;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -114,7 +114,7 @@ public class GhostExcelReader {
             Map<String, Integer> headerIndexMap = new LinkedHashMap<>(headerList.size());
             for (int c = 0; c < headerList.size(); c++) {
                 String headerName = headerList.get(c);
-                if (!StringUtils.isEmpty(headerName)) {
+                if (!ObjectUtils.isEmpty(headerName)) {
                     headerIndexMap.put(headerName, c);
                 }
             }
@@ -143,7 +143,7 @@ public class GhostExcelReader {
             Integer headerIndex = headerIndexMap.get(headerName);
 
             String fieldName = colFieldMap.get(headerName);
-            if (!StringUtils.isEmpty(fieldName)) {
+            if (!ObjectUtils.isEmpty(fieldName)) {
                 fieldIndexMap.put(fieldName, headerIndex);
             }
         }

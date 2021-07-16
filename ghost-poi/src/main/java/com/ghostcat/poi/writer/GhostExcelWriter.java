@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -123,9 +123,9 @@ public class GhostExcelWriter {
                 //表头名称
                 String headerName = headerCell.getStringCellValue();
 
-                if (!StringUtils.isEmpty(headerName)) {
+                if (!ObjectUtils.isEmpty(headerName)) {
                     String headerKey = colFieldMap.get(headerName);
-                    if (!StringUtils.isEmpty(headerKey)) {
+                    if (!ObjectUtils.isEmpty(headerKey)) {
                         headerIndexMap.put(headerKey, c);
                     }
                 }

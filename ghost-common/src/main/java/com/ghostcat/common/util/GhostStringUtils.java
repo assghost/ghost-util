@@ -1,7 +1,6 @@
 package com.ghostcat.common.util;
 
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -103,7 +102,7 @@ public class GhostStringUtils {
     public static String convertList2Str(Collection collection) {
         StringBuilder sb = new StringBuilder();
 
-        if (CollectionUtils.isEmpty(collection)) {
+        if (ObjectUtils.isEmpty(collection)) {
             for (Object item : collection) {
                 if (sb.length() > 0) {
                     sb = sb.append(",");
@@ -123,7 +122,7 @@ public class GhostStringUtils {
     public static List<String> convertStr2List(String str) {
         List<String> list = new ArrayList<>();
 
-        if (!StringUtils.isEmpty(str)) {
+        if (!ObjectUtils.isEmpty(str)) {
             String[] items = str.split(",");
 
             for (String item : items) {
@@ -134,17 +133,17 @@ public class GhostStringUtils {
         return list;
     }
 
-    public static void main(String[] args) {
-
-        String str = "error #{name} time #{date} thread #{id}";
-
-        Map<String, Object> map = new HashMap<>(3);
-        map.put("name", "Ethan");
-        map.put("date", new Date());
-        map.put("id", 1234556);
-
-
-        System.out.println(formatTemplate(str, map));
-        System.out.println(str);
-    }
+//    public static void main(String[] args) {
+//
+//        String str = "error #{name} time #{date} thread #{id}";
+//
+//        Map<String, Object> map = new HashMap<>(3);
+//        map.put("name", "Ethan");
+//        map.put("date", new Date());
+//        map.put("id", 1234556);
+//
+//
+//        System.out.println(formatTemplate(str, map));
+//        System.out.println(str);
+//    }
 }
